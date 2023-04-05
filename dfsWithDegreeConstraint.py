@@ -1,15 +1,17 @@
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import networkx as nx
+
+
 from matplotlib.patches import Polygon
 
 # create a new map
-map = Basemap(llcrnrlon=100, llcrnrlat=-45, urcrnrlon=165, urcrnrlat=-5, resolution='l', epsg=4326)
+map_obj = Basemap(llcrnrlon=100, llcrnrlat=-45, urcrnrlon=165, urcrnrlat=-5, resolution='l', epsg=4326)
 
 # draw coastlines, countries, and states
-map.drawcoastlines(linewidth=0.5)
-map.drawcountries(linewidth=0.5)
-map.drawstates(linewidth=0.5)
+map_obj.drawcoastlines(linewidth=0.5)
+map_obj.drawcountries(linewidth=0.5)
+map_obj.drawstates(linewidth=0.5)
 
 G = nx.Graph()
 
@@ -18,27 +20,39 @@ G.add_edges_from([('WA', 'NT'), ('WA', 'SA'), ('NT', 'SA'), ('NT', 'QLD'), ('SA'
 
 colors = {}
 
-def mrv_heuristic(node, G, colors):
-    available_colors = set(range(1, len(G) + 1)) - set(colors.get(neighbour) for neighbour in G[node] if neighbour in colors)
-    return len(available_colors)
 
-# calculation of chromatic number using DFS and MRV heuristic
+# Function to calculate the degree of a node
+def degree_constraint(node, G):
+    count = 0
+    for n in G.neighbors(node):
+        count += 1
+    return count
+
+# calculation of chromatic number using DFS and Degree Constraint heuristic
 def dfs_chromatic(G, node, colors):
-    colors_used = set(colors.get(neighbour) for neighbour in G[node] if neighbour in colors)
-    for color in range(1, len(G) + 1):
-        if color not in colors_used:
+    #
+    used_colors = set() #empty set
+    #for each neighbor of the current node checks if a color has been assigned by checking the dicitonary: colors
+    for neighbour in G[node]:
+        if neighbour in colors:
+            used_colors.add(colors[neighbour]) #if color has been assigned then add to set: used_colors
+    for color in range(1, len(G) + 1): #iterating over possible colors
+        if color not in used_colors: # checks if color is not in use then assign it to current node
             colors[node] = color
             break
-    for neighbour in sorted(G[node], key=lambda n: mrv_heuristic(n, G, colors)):
-        if neighbour not in colors:
-            dfs_chromatic(G, neighbour, colors)
 
+    neighbours = [n for n in G[node] if n not in colors] # storing neighbors in a list
+    neighbours.sort(key=lambda n: degree_constraint(n, G), reverse=True) # sorting the neighbors id decreasiing based on degree constraint
+
+    #this loop explores the neighbors of the current node and colors them based on the constraint
+    for neighbour in neighbours:
+        dfs_chromatic(G, neighbour, colors)
 
 for node in G:
     dfs_chromatic(G, node, colors)
 
 
-
+'''
 
 # define the latitude and longitude coordinates of each territory
 latitudes = {'WA': [-35.1139, -23.8783, -26.0013, -34.0517, -35.1139],
@@ -56,7 +70,7 @@ longitudes = {'WA': [113.6497, 114.1778, 118.0986, 129.0013, 113.6497],
               'NSW': [141.0000, 141.0000, 149.9735, 150.6890, 149.0000, 144.0000, 141.0000, 141.0000],
               'VIC': [141.0000, 143.8789, 143.8345, 146.1450, 147.9998, 149.9815, 141.0000],
               'TAS': [144.4763, 144.1490, 146.4396, 146.8023, 148.3646, 146.8220]}
-
+'''
 
 # define available colors
 avalColors = plt.cm.get_cmap('Set1', max(colors.values()))
@@ -65,14 +79,15 @@ print("Chromatic number:", max(colors.values()))
 # plot the territories with the assigned colors
 # longitudes and latitudes may not be correct coloring is faulty
 for region, color_index in colors.items():
-    x, y = map(longitudes[region], latitudes[region])
-    xy = list(zip(x, y))
-    poly = Polygon(xy, facecolor=avalColors.colors[color_index - 1], edgecolor='k', linewidth=0.5, alpha=0.75, label=region)
-    plt.gca().add_patch(poly)
+  #  x, y = map(longitudes[region], latitudes[region])
+  #  xy = list(zip(x, y))
+  #  poly = Polygon(xy, facecolor=avalColors.colors[color_index - 1], edgecolor='k', linewidth=0.5, alpha=0.75, label=region)
+  #  plt.gca().add_patch(poly)
     print(region, color_index)
 
 # add a legend
 plt.legend(loc='lower left')
+
 
 
 plt.show()
