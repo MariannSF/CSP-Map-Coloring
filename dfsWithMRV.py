@@ -19,7 +19,13 @@ G.add_edges_from([('WA', 'NT'), ('WA', 'SA'), ('NT', 'SA'), ('NT', 'QLD'), ('SA'
 colors = {}
 
 def mrv_heuristic(node, G, colors):
-    available_colors = set(range(1, len(G) + 1)) - set(colors.get(neighbour) for neighbour in G[node] if neighbour in colors)
+    # Get the set of used colors for the neighbors of the current node
+    used_colors = set(colors.get(neighbor) for neighbor in G[node] if neighbor in colors)
+
+    # Calculate the number of available colors
+    all_colors = set(range(1, len(G) + 1))
+    available_colors = all_colors - used_colors
+
     return len(available_colors)
 
 # chromatic number in DFS with heuristics
