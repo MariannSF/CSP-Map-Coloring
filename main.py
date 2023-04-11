@@ -3,11 +3,11 @@ from map_plotter import MapPlotter
 from DFS_FC import DFS_FC
 from dfs_MRV import dfsMRV
 from DFS_DC import DFS_DC
+from dfs import DFS
+from DFS_FC_MRV import FC_MRV
+from DFS_FC_DegreeC import FC_DegreeC
 
 import networkx as nx
-
-
-# Example usage:
 
 def main():
 
@@ -68,6 +68,90 @@ def main():
                         ('WI', 'MI'), ('WI', 'MN'), ('WI', 'IA'), ('WI', 'IL'),
                         ('WY', 'MT'), ('WY', 'SD'), ('WY', 'NE'), ('WY', 'CO'), ('WY', 'UT')])
 
+
+    print("***************** DFS  **************************")
+    dfs = DFS(graph)
+    colors = dfs.run()
+    print("Chromatic number:", max(colors.values()))
+
+    # Create a mapping of color numbers to color names
+    color_mapping = {
+        1: 'red',
+        2: 'blue',
+        3: 'green',
+        4: 'yellow',
+        5: 'pink'
+        #6: 'orange',
+        #7: 'black',
+        #8: 'grey',
+        #9: 'purple',
+        #10: 'white'
+    }
+
+    # Print the colors assigned to each node
+    #for node, color in colors.items():
+    #    print(f"{node}: {color}")
+
+    for node, color_number in colors.items():
+        color_name = color_mapping.get(color_number, f"unknown_color_{color_number}")
+        print(f"{node}: {color_name}")
+
+    print("***************** DFS_MRV  **************************")
+
+    dfs_MRV = dfsMRV(graph)
+    colors = dfs_MRV.run()
+
+    # Create a mapping of color numbers to color names
+    color_mapping = {
+        1: 'red',
+        2: 'blue',
+        3: 'green',
+        4: 'yellow',
+        5: 'pink',
+        6: 'orange',
+        7: 'black',
+        8: 'grey',
+        9: 'purple',
+        10: 'white'
+    }
+
+    # Print the colors assigned to each node
+    # for node, color in colors.items():
+    #    print(f"{node}: {color}")
+
+    print("Chromatic number:", max(colors.values()))
+
+    for node, color_number in colors.items():
+        color_name = color_mapping.get(color_number, f"unknown_color_{color_number}")
+        print(f"{node}: {color_name}")
+
+    ##DFSwithDegreeConstraint
+
+    print("***************** DFS_DC  **************************")
+
+    dfs_DegreeConstraint = DFS_DC(graph)
+    colors = dfs_DegreeConstraint.run()
+
+    # Create a mapping of color numbers to color names
+    color_mapping = {
+        1: 'red',
+        2: 'blue',
+        3: 'green',
+        4: 'yellow',
+        5: 'pink',
+        6: 'orange',
+        7: 'black',
+        8: 'grey',
+        9: 'purple',
+        10: 'white'
+    }
+
+    print("Chromatic number:", max(colors.values()))
+
+    for node, color_number in colors.items():
+        color_name = color_mapping.get(color_number, f"unknown_color_{color_number}")
+        print(f"{node}: {color_name}")
+
     # Run Depth First Search with Forward Checking
 
     print("***************** DFS_FC  **************************")
@@ -97,12 +181,10 @@ def main():
         color_name = color_mapping.get(color_number, f"unknown_color_{color_number}")
         print(f"{node}: {color_name}")
 
-    #DFSwithMRV
-
-    print("***************** DFS_MRV  **************************")
-
-    dfs_MRV = dfsMRV(graph)
-    colors = dfs_MRV.run()
+    print("***************** DFS_FC_MRV **************************")
+    DFS_FC_MRV = FC_MRV(graph)
+    colors = DFS_FC_MRV.run()
+    print("Chromatic number:", max(colors.values()))
 
     # Create a mapping of color numbers to color names
     color_mapping = {
@@ -110,49 +192,44 @@ def main():
         2: 'blue',
         3: 'green',
         4: 'yellow',
-        5: 'pink',
-        6: 'orange',
-        7: 'black',
-        8: 'grey',
-        9: 'purple',
-        10: 'white'
+        5: 'pink'
+        # 6: 'orange',
+        # 7: 'black',
+        # 8: 'grey',
+        # 9: 'purple',
+        # 10: 'white'
     }
 
     # Print the colors assigned to each node
-    #for node, color in colors.items():
+    # for node, color in colors.items():
     #    print(f"{node}: {color}")
-
-    print("Chromatic number:", max(colors.values()))
-
 
     for node, color_number in colors.items():
         color_name = color_mapping.get(color_number, f"unknown_color_{color_number}")
         print(f"{node}: {color_name}")
 
-    ##DFSwithDegreeConstraint
+    print("***************** DFS_FC_Degree Constraint **************************")
+    DFS_FC_DegreeC = FC_DegreeC(graph)
+    colors = DFS_FC_DegreeC.run()
+    print("Chromatic number:", max(colors.values()))
 
-    print("***************** DFS_DC  **************************")
-
-
-    dfs_DegreeConstraint = DFS_DC(graph)
-    colors = dfs_DegreeConstraint.run()
-
-        # Create a mapping of color numbers to color names
+    # Create a mapping of color numbers to color names
     color_mapping = {
         1: 'red',
         2: 'blue',
         3: 'green',
         4: 'yellow',
-        5: 'pink',
-        6: 'orange',
-        7: 'black',
-        8: 'grey',
-        9: 'purple',
-        10: 'white'
+        5: 'pink'
+        # 6: 'orange',
+        # 7: 'black',
+        # 8: 'grey',
+        # 9: 'purple',
+        # 10: 'white'
     }
 
-    print("Chromatic number:", max(colors.values()))
-
+    # Print the colors assigned to each node
+    # for node, color in colors.items():
+    #    print(f"{node}: {color}")
 
     for node, color_number in colors.items():
         color_name = color_mapping.get(color_number, f"unknown_color_{color_number}")

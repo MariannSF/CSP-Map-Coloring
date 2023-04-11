@@ -2,7 +2,7 @@
 import networkx as nx
 
 
-class DFS_FC:
+class FC_MRV:
     def __init__(self, graph):
         self.graph = graph
         self.colors = {}
@@ -10,6 +10,11 @@ class DFS_FC:
         self.node_order = list(graph.nodes())
 
 
+    def mrv(self, node):
+        used_colors = set(self.colors.get(neighbor) for neighbor in self.graph[node] if neighbor in self.colors)
+        all_colors = set(range(1, len(self.graph) + 1))
+        available_colors = all_colors - used_colors
+        return len(available_colors)
 
     def forward_checking(self, node):
         for neighbor in self.graph[node]:
@@ -21,10 +26,14 @@ class DFS_FC:
                 self.domain[node].remove(self.colors[neighbor])
         return self.domain
 
+    def select_mrv_node(self):
+        uncolored_nodes = [n for n in self.graph if n not in self.colors]
+        return min(uncolored_nodes, key=lambda n: self.mrv(n))
     def dfs_fc(self):
         if len(self.colors) == len(self.graph):
             return True
-        node = self.node_order.pop(0)
+        node = self.select_mrv_node()
+        self.node_order.remove(node)
         for color in self.domain[node]:
             if color not in set(self.colors.get(neighbor) for neighbor in self.graph[node] if neighbor in self.colors):
                 self.colors[node] = color
