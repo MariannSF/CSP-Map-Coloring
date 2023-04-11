@@ -2,14 +2,18 @@
 import networkx as nx
 
 
-class DFS_FC:
+class FC_DegreeC:
     def __init__(self, graph):
         self.graph = graph
         self.colors = {}
         self.domain = {node: set(range(1, len(graph) + 1)) for node in graph}
         self.node_order = list(graph.nodes())
 
-
+    def degree_constraint(self, node):
+        count = 0
+        for neighbor in self.graph.neighbors(node):
+            count += 1
+        return count
 
     def forward_checking(self, node):
         for neighbor in self.graph[node]:
@@ -21,10 +25,15 @@ class DFS_FC:
                 self.domain[node].remove(self.colors[neighbor])
         return self.domain
 
+    def select_degree_constraint_node(self):
+        uncolored_nodes = [n for n in self.graph if n not in self.colors]
+        return max(uncolored_nodes, key=lambda n: self.degree_constraint(n))
+
     def dfs_fc(self):
         if len(self.colors) == len(self.graph):
             return True
-        node = self.node_order.pop(0)
+        node = self.select_degree_constraint_node()
+        self.node_order.remove(node)
         for color in self.domain[node]:
             if color not in set(self.colors.get(neighbor) for neighbor in self.graph[node] if neighbor in self.colors):
                 self.colors[node] = color
