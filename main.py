@@ -1,5 +1,5 @@
 # main.py
-from map_plotter import MapPlotter
+#from map_plotter import MapPlotter
 from DFS_FC import DFS_FC
 from dfs_MRV import dfsMRV
 from DFS_DC import DFS_DC
@@ -12,8 +12,8 @@ import networkx as nx
 def main():
 
     # Create a new map
-    map_plotter = MapPlotter(100, -45, 165, -5, 'l', 4326)
-    map_plotter.draw_map()
+   # map_plotter = MapPlotter(100, -45, 165, -5, 'l', 4326)
+  #  map_plotter.draw_map()
 
     # Create the graph
     graph = nx.Graph()
